@@ -1,0 +1,104 @@
+---
+title: "Milestone_5"
+author: "Minjue Wu"
+date: "10/18/2019"
+output: html_document
+---
+
+## Anime: Rise of a Global Phenomenon 
+
+First created in 1917 with propaganda films such as "Momotarō: Umi no Shinpei", Japanese animation (anime) swept the world in the 1980s as a global entertainment phenonemon with the rise of mecha, superhero series, and space operas. As the focus of anime shifted from film studio features such as Akira and Spirited Away, the format of popular anime transformed into increasingly long series consisting of shorter episodes —— bite sized-chunks which can be pitched as more accessible, lower commitment, and reduced-stakes trial runs to mold to ever-shifting popular opinion. 
+
+## Heavy Hitters Frenzy
+
+
+
+
+## The More the Merrier...?
+
+
+```{r loading, include=FALSE}
+library(lubridate)
+library(ggplot2)
+library(janitor)
+library(readxl)
+library(knitr)
+library(tidyverse)
+library(dplyr)
+library(gt)
+library(tidyr)
+
+# Read in informational data about anime productions from the 2019 master data set from Github; save as local file.
+
+rawanim <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-23/tidy_anime.csv")
+rawanim <- clean_names(rawanim)
+save(rawanim, file = "data/rawanim.RData")
+
+# Read in informational data about anime recommendations from the 2019 dataset from Anime News Network; save as local file.
+
+news <- readr::read_csv("https://www.kaggle.com/canggih/anime-data-score-staff-synopsis-and-genre#dataanime.csv")
+news <- clean_names(news)
+save(news, file = "data/news.RData")
+
+# Read in condensed ratings, voting members, and names of anime productions from Kaggle data sets snapping in 2017
+
+comments <- read_csv("data/anime.csv")
+
+```
+
+```{r naruto, echo = FALSE}
+
+# Save essential data like # of episodes, rating(on a scale of 1-10), and number of members who voted to create the rating from the smaller 2017 data set as nar
+
+nar <- comments %>%
+  select(name, episodes, rating, members) %>%
+  dplyr::filter(grepl('Naruto', name))
+
+# Select comparitive data from MyAnimeList like # of start date(production release), score(on a scale of 1-10), number of members who voted to create the score, and other metrics like rank and popularity not found in basic nar dataset. Delete duplicates by keeping only distinct names (Naruto for example has a dozen duplicates due to having distinct rows for each genre label)
+
+rawanim <- rawanim %>%
+  dplyr::filter(grepl('Naruto', name)) %>%
+  distinct(name, .keep_all = TRUE) %>%
+  select(name, episodes, start_date, score, scored_by, rank, popularity)
+
+# Merge both datasets by the name of anime(taken from rawanim which has a more comprehensive list), and arrange the data by the date of production to better track change over time
+
+master <- merge(nar, rawanim, by.rawanim = "name") %>%
+  arrange(start_date)
+
+#Some of the scores and contributing voting members from the two datasets are not equal, so I created two new columns to take the data with biggest sample size. I created a new row called actmem, which returns the highest "contributing voting member" size from the two data sets. 
+
+master$actmem <- ifelse(
+  (
+    (master$scored_by > master$members)
+  ),
+  master$scored_by,
+  master$members
+)
+
+#I follow up with another row called actscor to record the corresponding score out of 10 that is from the data set with the highest "contributing voting member" size.
+
+master$actscor <- ifelse(
+  (
+    (master$scored_by > master$members)
+  ),
+  master$score,
+  master$rating
+)
+```
+
+```{r narutorun, echo= FALSE, message= FALSE}
+
+#I create a line plot of the change in overall rank and the score of Naruto productions from the start of the franchise until 2016. I started out with a geom_line() plot, but it look too jagged and distracted from seeing overall trends, so I switched to smooth lines. I plotted a scatterplot of the rank and score over time, adjusting size based on how many members voted to track the size of the audience with each franchise. To fit both rank and score on the same scale, I divided rank by 1000 (since most of the later Naruto productions were in the 3000-4000). From the graphs, it looks like the scores of Naruto productions initally dipped in the late 2000s but is steadily increasing, while the overall rank has decreased when compared to all other anime productions, and the more recent productions are attracted a smaller group of dedicated fans (as measured by voting users).
+
+ggplot() + geom_point(data = master, aes(x = start_date, y = actscor, color = "Score (1-10 Scale)", size = actmem)) + geom_smooth(data = master, se = F, aes(x = start_date, y = actscor, color = "Score (1-10 Scale)")) + geom_point(data = master, aes(x = start_date, y = rank/1000, color = "Rank (Divided by 1000)", size = actmem))+ geom_smooth(data = master, se = F, aes(x = start_date, y = rank/1000, color = "Rank (Divided by 1000)")) +  scale_y_continuous(breaks=c(0,1,2,3,4,5,6,7,8,9,10)) + scale_color_discrete(name = "Anime Metric") + labs(size = "Number of Users Providing Feedback", x = "Year of Anime Release", y = "Rank and Popularity", title = "Change in Rank and Popularity of Naruto Franchise Anime Productions by Release Date", subtitle = "Based on Compiled User Feedback on MyAnimeList from 2016-2017") 
+```
+<br /> Sources: Raw anime information database processed by ["rfordatascience"](https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-23/tidy_anime.csv) and a CSV file of anime recommendation ratings on [Kaggle](https://www.kaggle.com/CooperUnion/anime-recommendations-database/data).
+
+
+### Acknowledgements
+Major thanks to Canggih P Wibowo, CooperUnion, and MyAnimeList for compiling the informational and review data. 
+
+Sources: Raw anime information database processed by ["rfordatascience"](https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-23/tidy_anime.csv) and a CSV file of anime recommendation ratings on [Kaggle](https://www.kaggle.com/CooperUnion/anime-recommendations-database/data). A full recommendation set from Anime News Network was also processed on [Kaggle](https://www.kaggle.com/canggih/anime-data-score-staff-synopsis-and-genre#dataanime.csv)
+
+A link to the Github repository can be found [here]("https://github.com/wminjue/Milestone_5.git").
