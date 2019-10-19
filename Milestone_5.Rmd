@@ -7,14 +7,13 @@ output: html_document
 
 ## Anime: Rise of a Global Phenomenon 
 
-First created in 1917 with propaganda films such as "Momotarō: Umi no Shinpei", Japanese animation (anime) swept the world in the 1980s as a global entertainment phenonemon with the rise of mecha, superhero series, and space operas. As the focus of anime shifted from film studio features such as Akira and Spirited Away, the format of popular anime transformed into increasingly long series consisting of shorter episodes —— bite sized-chunks which can be pitched as more accessible, lower commitment, and reduced-stakes trial runs to mold to ever-shifting popular opinion. 
+First created in 1917 with propaganda films such as "Momotarō: Umi no Shinpei", Japanese animation (anime) swept the world in the 1980s as a global entertainment phenonemon with the rise of mecha, superhero series, and space operas. As the focus of anime shifted from film studio features such as Akira and Spirited Away, the format of popular anime transformed into increasingly long series consisting of shorter episodes —— bite sized-chunks which can be pitched as more accessible, lower commitment, and reduced-stakes trial runs to mold to ever-shifting popular opinion. As of 2014, there are over 58 million hashtags for the topic of "anime", and in 2017 the the anime sector earned over $19 billion USD worldwide. The burning question follows: with such a high following and market shares, which anime series are responsible for bringing in most of the revenue, and how do they manage to successfully (do or they?) captivate audiences over decades of airing? 
 
 ## Heavy Hitters Frenzy
-
-
-
+A glance at the Top Anime list on MyAnimeList, a manga/anime social networking and cataloging website with over 120 million visitors per month, reveals the most popular hits are consistently dominated by specific, classic anime shows that have aired hundreds of episodes over years. Fullmetal Alchemist:Brotherhood, for example, the second  64-episode reboot of the original Fullmetal adaptaion, boasts over a million members involved in forums, which doesn't even account for the amount of visiting members who simply leave ratings. This project seeks to analyze trends across years in ranking, popularity, audience size, and overall quality ratings of the 10 most popular long-running (and still running!) anime shows in history. These include Naruto, Bleach, Fullmetal Alchemist, Keroro Gunsō, Gin Tama, One Piece, Detective Conan (Case Closed), Crayon Shin-Chan, Dragon Ball Z, and Sazae-san. Ranging from 120 to over 1600 episodes each, these series and their offshoots have evolved over the past decade, and data gathered from various Anime review sites and new sources give a comprehensive overview of how popular ratings has changed from 2006-2016.
 
 ## The More the Merrier...?
+Take Naruto reviews from CrunchyRoll News, Comicbooks, and IGN, for example. 
 
 
 ```{r loading, include=FALSE}
@@ -97,10 +96,18 @@ ggplot() + geom_point(data = masternar, aes(x = start_date, y = actscor, color =
 <br /> Sources: Raw anime information database processed by ["rfordatascience"](https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-23/tidy_anime.csv) and a CSV file of anime recommendation ratings on [Kaggle](https://www.kaggle.com/CooperUnion/anime-recommendations-database/data).
 
 
+### Sources
+My data currently includes three datasets. One is a raw csv file processed by “rfordatascience” which compiles the raw informational categories of anime series on MyAnimeList. This provides the basic background info about almost every anime series I could hope to analyze, giving key filters such as producers, genre, studio, number of episodes, airing date, duration, and date of premiere.
+
+My second and third databases are CSV files of anime recommendation ratings on Kaggle. The first of these is scraped from user preference data from 73,516 anime networking site users on 12,294 anime titles, including movie titles instead of only multi-episode series. This contains a broader range of users and standardizes rantings on a 10 point scale across different anime review sites. My third database is compiled from 2006-2015 anime reviews from Anime News Network, a major anime industry news website which reaches audiences from Canada, Australia, U.S., and Southeast Asia. 
+
+URLs: Raw anime information database processed by ["rfordatascience"](https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-23/tidy_anime.csv)
+CSV file of anime recommendation ratings on [Kaggle:](https://www.kaggle.com/CooperUnion/anime-recommendations-database/data). 
+A full recommendation set from Anime News Network: [Kaggle](https://www.kaggle.com/canggih/anime-data-score-staff-synopsis-and-genre#dataanime.csv)
+
+
 ### Acknowledgements
 Major thanks to Canggih P Wibowo, CooperUnion, and MyAnimeList for compiling the informational and review data. 
-
-Sources: Raw anime information database processed by ["rfordatascience"](https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-23/tidy_anime.csv) and a CSV file of anime recommendation ratings on [Kaggle](https://www.kaggle.com/CooperUnion/anime-recommendations-database/data). A full recommendation set from Anime News Network was also processed on [Kaggle](https://www.kaggle.com/canggih/anime-data-score-staff-synopsis-and-genre#dataanime.csv)
 
 A link to the Github repository can be found [here]("https://github.com/wminjue/Milestone_5.git").
 
